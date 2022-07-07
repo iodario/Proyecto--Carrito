@@ -29,7 +29,7 @@ export const createBootstrapCard = (content = {}) => {
     const cardBody = getCardBody(title, price, description, stars);
     card.appendChild(cardBody);
   
-    const cardFooter = getCardFooter(category);
+    const cardFooter = getCardFooter(id);
     card.appendChild(cardFooter);
   
     return cardContainer;
@@ -175,7 +175,7 @@ export const createBootstrapCard = (content = {}) => {
   };
   
   const getCardFooter = (category) => {
-    category = category.charAt(0).toUpperCase() + category.slice(1);
+    // category = category.charAt(0).toUpperCase() + category.slice(1);
   
     //Creo el elemento contenedor del footer
     const cardFooter = document.createElement("div");
@@ -192,17 +192,21 @@ export const createBootstrapCard = (content = {}) => {
     cardFooterTextContainer.classList.add("text-center");
   
     // Elemento anchor de HMTL.
-    const cardFooterLink = document.createElement("a");
-    cardFooterLink.classList.add("btn", "btn-outline-dark", "mt-auto");
-    cardFooterLink.setAttribute("href", `#${category}`);
-    cardFooterLink.textContent = category;
+    const cardButton = document.createElement("button");
+    cardButton.classList.add("btn", "btn-outline-dark", "mt-auto");
+    cardButton.setAttribute("href", `#${category}`);
+    cardButton.textContent = "Agregar al carrito";
     cardFooter.appendChild(cardFooterTextContainer);
-    cardFooterTextContainer.appendChild(cardFooterLink);
-  
-    // Retorno el footer.
+    cardFooterTextContainer.appendChild(cardButton); 
+
+        // Retorno el footer.
     return cardFooter;
   };
   
+
+
+
+
   /*
         REPRESENTACION EN HTML DEL CODIGO DE ARRIBA
     
