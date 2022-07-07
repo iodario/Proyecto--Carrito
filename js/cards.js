@@ -99,11 +99,8 @@ export const createBootstrapCard = (content = {}) => {
     cardBody.appendChild(cardTitle);
   
     const cardPrice = getCardPrice(price);
-    cardBody.appendChild(cardPrice);
-  
-    const cardDescription = getCardDescription(description);
-    cardBody.appendChild(cardDescription);
-  
+    cardBody.appendChild(cardPrice); 
+
     const cardReviewsStars = getCardReviewsStars(stars);
     cardBody.appendChild(cardReviewsStars);
   
@@ -149,12 +146,7 @@ export const createBootstrapCard = (content = {}) => {
     return cardPrice;
   };
   
-  const getCardDescription = (description = "") => {
-    const cardDescription = document.createElement("p");
-    cardDescription.appendChild(document.createTextNode(description));
   
-    return cardDescription;
-  };
   
   const getCardReviewsStars = (stars = 1) => {
     //Si no tiene reviews en estrellas no quiero que haga nada.
