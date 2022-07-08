@@ -174,7 +174,7 @@ export const createBootstrapCard = (content = {}) => {
     return starsContainer;
   };
   
-  const getCardFooter = (category) => {
+  const getCardFooter = (id) => {
     // category = category.charAt(0).toUpperCase() + category.slice(1);
   
     //Creo el elemento contenedor del footer
@@ -194,7 +194,7 @@ export const createBootstrapCard = (content = {}) => {
     // Elemento anchor de HMTL.
     const cardButton = document.createElement("button");
     cardButton.classList.add("btn", "btn-outline-dark", "mt-auto");
-    cardButton.setAttribute("href", `#${category}`);
+    cardButton.setAttribute("id", id);
     cardButton.textContent = "Agregar al carrito";
     cardFooter.appendChild(cardFooterTextContainer);
     cardFooterTextContainer.appendChild(cardButton); 

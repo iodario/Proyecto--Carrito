@@ -1,5 +1,12 @@
-import {createBootstrapCard} from "./cards.js";
-import {getAllProducts, getProductById, APIURL} from "./fetch.js";
+import { createBootstrapCard } from "./cards.js";
+import { getAllProducts, getProductById, APIURL, fetchAPI } from "./fetch.js";
+
+//declaro objeto Carrito
+let carrito = []
+let productos = {}
+const templateCarrito = document.getElementById('template-carrito').content;
+
+
 
 //Atajo para el método querySelector
 const $ = (selector) => document.querySelector(selector);
@@ -33,14 +40,105 @@ const renderProducts = (products = []) => {
 //Funcion anónima que se auto-ejecuta. Esta bueno para una funcion que no necesita parámetros y es inicializadora de la app.
 
 (() => {
+
   fetch(APIURL)
     .then((response) => response.json())
     .then((data) => {
+      productos = data;
       renderProducts(data);
-      console.log(data);
+      // console.log(data);
     })
     .catch((err) => console.error(err));
 })();
+
+
+//paso 2) utilizamos DOMContentLoaded cuando toda la pagina esta cargada 
+document.addEventListener('DOMContentLoaded', () => {
+  let data = fetchAPI(APIURL);
+  if (localStorage.getItem('carrito')) {       //11-a) si existe dentro del localStorage una clave 'carrito'
+    carrito = JSON.parse(localStorage.getItem('carrito'));   //asignar a carrito, el parse a Objeto de localStorage.getItem
+    renderProducts(data);                          //mostrar carrito en el Dom
+  }
+})
+
+
+domElements.productsContainer.addEventListener('click', (e) => {
+  addCarrito(e)
+})
+
+
+const addCarrito = e => {
+  // console.log(e.target)    
+  // console.log(e.target.classList.contains('btn-dark'))     // valida si el elemento contiene la propiedad que pasamos por parametro
+  if (e.target.classList.contains('btn-outline-dark')) {   //detectamos el boton y utilizamos el producto.id
+    // console.log(e.target.parentElement) //parentElement me muestra el elemento padre, en este caso el div padre
+    setCarrito(e.target.id);
+  }
+  e.stopPropagation()   //detenemos la propagacion del evento 
+
+}
+
+
+function setCarrito(id) {
+  let productoSeleccionado = productos.find(element => element.id == id);
+
+  const producto = {
+    id: productoSeleccionado.id,   //identifica el id del elemento clickeado
+    title: productoSeleccionado.title,     // el ttulo
+    precio: productoSeleccionado.price,       // el precio
+    cantidad: 1                                             // la cantidad la dejamos en 1, luego aumentara
+  }
+  //4-e) aumentar el numero de productos en el carrito, al presionar Comprar       //Carrito es toda nuestra coleccion de objetos. Estamos accediendo sólo al elemento que se está repitiendo. Una vez que accedemos, accedemos solamente a la cantidad, y la aumentamos en 1. Si este producto no exixte, por defecto la cantidad sera 1. 
+  if (carrito.hasOwnProperty(producto.id)) {
+    producto.cantidad = carrito[producto.id].cantidad + 1
+  }
+  //una vez que tenemos el objeto tenemos que pushearlo al carrito. Estamos haciendo una coleccion de objetos indexados. 
+  carrito[producto.id] = { ...producto }    //spread operator, aqui estamos haciendo una 'copia' de producto
+  console.log(carrito)
+  pintarCarrito();
+}
+
+const pintarCarrito = () => {
+  // console.log(carrito)
+  items.innerHTML = ' '    //5-d) items debe partir vacio por cada vez que ejecutamos pintar Carrito(0)
+  carrito.forEach(producto => {
+      templateCarrito.querySelector('th').textContent = producto.id  //editando contenido de tag 'th'
+      templateCarrito.querySelectorAll('td')[0].textContent = producto.title
+      templateCarrito.querySelectorAll('td')[1].textContent = producto.cantidad
+      templateCarrito.querySelector('.btn-info').dataset.id = producto.id
+      templateCarrito.querySelector('.btn-danger').dataset.id = producto.id
+      templateCarrito.querySelector('span').textContent = producto.cantidad * producto.precio
+      //clonando el carrito, utilizamos el fragment
+      const clone = templateCarrito.cloneNode(true)
+      fragment.appendChild(clone);   // ?
+  })
+  // 5-c)Pintamos la informacion
+  items.appendChild(fragment)
+
+  pintarFooter()   //6)
+
+  localStorage.setItem('carrito',JSON.stringify(carrito))    //11-b)
+}
+
+
+
+// carrito.push(productoSeleccionado);
+// console.log(carrito);
+// }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 //Si llegamos por tiempos... aca algun ejemplo mas de fetch e ideas:
 
