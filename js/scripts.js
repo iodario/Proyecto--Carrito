@@ -5,8 +5,8 @@ import { getAllProducts, getProductById, APIURL, fetchAPI } from "./fetch.js";
 let carrito = []
 let productos = {}
 const templateCarrito = document.getElementById('template-carrito').content;
-
-
+const fragment = document.createDocumentFragment();
+const templateFooter = document.getElementById('template-footer').content;
 
 //Atajo para el método querySelector
 const $ = (selector) => document.querySelector(selector);
@@ -82,15 +82,18 @@ const addCarrito = e => {
 function setCarrito(id) {
   let productoSeleccionado = productos.find(element => element.id == id);
 
-  const producto = {
+  let producto = {
     id: productoSeleccionado.id,   //identifica el id del elemento clickeado
     title: productoSeleccionado.title,     // el ttulo
     precio: productoSeleccionado.price,       // el precio
-    cantidad: 1                                             // la cantidad la dejamos en 1, luego aumentara
+    cantidad: 1                                            // la cantidad la dejamos en 1, luego aumentara
   }
+
   //4-e) aumentar el numero de productos en el carrito, al presionar Comprar       //Carrito es toda nuestra coleccion de objetos. Estamos accediendo sólo al elemento que se está repitiendo. Una vez que accedemos, accedemos solamente a la cantidad, y la aumentamos en 1. Si este producto no exixte, por defecto la cantidad sera 1. 
   if (carrito.hasOwnProperty(producto.id)) {
+    console.log(producto);
     producto.cantidad = carrito[producto.id].cantidad + 1
+    
   }
   //una vez que tenemos el objeto tenemos que pushearlo al carrito. Estamos haciendo una coleccion de objetos indexados. 
   carrito[producto.id] = { ...producto }    //spread operator, aqui estamos haciendo una 'copia' de producto
@@ -128,6 +131,36 @@ btnCarrito.addEventListener("click", function () {
   myInput.focus()
 })
 
+// 6)template-footer
+// 6-a) generamos los template, vamos a buscar el id guardado
+const pintarFooter = () => {
+  footer.innerHTML = ''    //iniciamos footer en 0
+  //debemos preguntar si nuetro carrito esta vacio, si es true entra el if:
+  if (Object.keys(carrito).length === 0) {
+      footer.innerHTML = ` <th scope="row" colspan="5">Carrito vacío - comience a comprar!</th>`
+      return   //no olvidar return para que se salga de la funcion
+  }
+  //7) si no esta vacio pintamos footer, sumando cantidades y totales
+  const nCantidad = Object.values(carrito).reduce((acc, { cantidad }) => acc + cantidad, 0)    //este acumuldador, por cada iteracion va a ir acumulando lo que nosotros hagamos como suma
+  const nPrecio = Object.values(carrito).reduce((acc, { cantidad, precio }) => acc + cantidad * precio, 0)
+  console.log(nPrecio)
+  // console.log(nCantidad)
+
+  //8) pintamos la ultima funcionalidad en el footer(suma de cantidades y totales)
+  templateFooter.querySelectorAll('td')[0].textContent = nCantidad;
+  templateFooter.querySelector('span').textContent = nPrecio;
+
+  const clone = templateFooter.cloneNode(true)
+  fragment.appendChild(clone);
+  footer.appendChild(fragment);
+
+  //9) Evento vaciar carrito
+  const btnVaciar = document.getElementById('vaciar-carrito')
+  btnVaciar.addEventListener('click', () => {
+      carrito = {};   //vaciamos el objeto carrito
+      pintarCarrito();
+  })
+}
 // carrito.push(productoSeleccionado);
 // console.log(carrito);
 // }
