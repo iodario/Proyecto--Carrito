@@ -5,7 +5,9 @@ import { getAllProducts, getProductById, APIURL, fetchAPI } from "./fetch.js";
 
 let carrito = []
 let productos = {}
+let cantproduc = 0;
 const templateCarrito = document.getElementById('template-carrito').content;
+let btnCarrito = document.getElementById('cantCarrito');
 const fragment = document.createDocumentFragment();
 const templateFooter = document.getElementById('template-footer').content;
 
@@ -97,13 +99,15 @@ function setCarrito(id) {
     producto.cantidad = carrito[producto.id].cantidad + 1
     
   }
+  cantproduc += 1;
   //una vez que tenemos el objeto tenemos que pushearlo al carrito. Estamos haciendo una coleccion de objetos indexados. 
   carrito[producto.id] = { ...producto }    //spread operator, aqui estamos haciendo una 'copia' de producto
   pintarCarrito();
 }
 
 const pintarCarrito = () => {
-  console.log(carrito)
+  console.log(btnCarrito)
+  btnCarrito.textContent = cantproduc;
   items.innerHTML = ' '    //5-d) items debe partir vacio por cada vez que ejecutamos pintar Carrito(0)
     
   carrito.forEach(producto => {
@@ -114,7 +118,6 @@ const pintarCarrito = () => {
       templateCarrito.querySelector('.btn-danger').dataset.id = producto.id
       templateCarrito.querySelector('span').textContent = producto.cantidad * producto.precio
       //clonando el carrito, utilizamos el fragment
-      console.log(producto);
       const clone = templateCarrito.cloneNode(true)
       fragment.appendChild(clone);   // ?
   })
@@ -156,7 +159,8 @@ const pintarFooter = () => {
   //9) Evento vaciar carrito
   const btnVaciar = document.getElementById('vaciar-carrito')
   btnVaciar.addEventListener('click', () => {
-      carrito = [];   //vaciamos el objeto carrito
+      carrito = [];
+      cantproduc = 0;   //vaciamos el objeto carrito
       pintarCarrito();
   })
 }
