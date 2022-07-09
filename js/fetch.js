@@ -5,7 +5,6 @@ export const APIURL = "https://fakestoreapi.com/products";
 export const fetchAPI = async (URL) => {
   const result = await fetch(URL);
   const data = await result.json();
-  console.log(data);
   return data;
 };
 
