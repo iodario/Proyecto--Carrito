@@ -2,7 +2,8 @@ import { createBootstrapCard } from "./cards.js";
 import { getAllProducts, getProductById, APIURL, fetchAPI } from "./fetch.js";
 
 //declaro objeto Carrito
-var carrito = []
+
+let carrito = []
 let productos = {}
 let cantproduc = 0;
 const templateCarrito = document.getElementById('template-carrito').content;
@@ -66,6 +67,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 domElements.productsContainer.addEventListener('click', (e) => {
   addCarrito(e)
+  Swal.fire('Producto agregado con exito')
 })
 
 
