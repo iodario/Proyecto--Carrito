@@ -55,11 +55,11 @@ const renderProducts = (products = []) => {
 //paso 2) utilizamos DOMContentLoaded cuando toda la pagina esta cargada 
 document.addEventListener('DOMContentLoaded', () => {
   let data = fetchAPI(APIURL);
-  if (localStorage.getItem('carrito')) {       //11-a) si existe dentro del localStorage una clave 'carrito'
-    carrito = JSON.parse(localStorage.getItem('carrito'));   //asignar a carrito, el parse a Objeto de localStorage.getItem
+  //if (localStorage.getItem('carrito')) {       //11-a) si existe dentro del localStorage una clave 'carrito'
+   // carrito = JSON.parse(localStorage.getItem('carrito'));   //asignar a carrito, el parse a Objeto de localStorage.getItem
     renderProducts(data);                          //mostrar carrito en el Dom
   }
-})
+)
 
 
 domElements.productsContainer.addEventListener('click', (e) => {
@@ -126,10 +126,7 @@ const pintarCarrito = () => {
 
 var myInput = document.getElementById('exampleModal')
 
-var btnCarrito = document.getElementById("btnCarro");
-btnCarrito.addEventListener("click", function () {
-  myInput.focus()
-})
+
 
 // 6)template-footer
 // 6-a) generamos los template, vamos a buscar el id guardado
