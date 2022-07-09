@@ -2,7 +2,7 @@ import { createBootstrapCard } from "./cards.js";
 import { getAllProducts, getProductById, APIURL, fetchAPI } from "./fetch.js";
 
 //declaro objeto Carrito
-let carrito = []
+var carrito = []
 let productos = {}
 const templateCarrito = document.getElementById('template-carrito').content;
 const fragment = document.createDocumentFragment();
@@ -97,13 +97,13 @@ function setCarrito(id) {
   }
   //una vez que tenemos el objeto tenemos que pushearlo al carrito. Estamos haciendo una coleccion de objetos indexados. 
   carrito[producto.id] = { ...producto }    //spread operator, aqui estamos haciendo una 'copia' de producto
-  console.log(carrito)
   pintarCarrito();
 }
 
 const pintarCarrito = () => {
-  // console.log(carrito)
+  console.log(carrito)
   items.innerHTML = ' '    //5-d) items debe partir vacio por cada vez que ejecutamos pintar Carrito(0)
+    
   carrito.forEach(producto => {
       templateCarrito.querySelector('th').textContent = producto.id  //editando contenido de tag 'th'
       templateCarrito.querySelectorAll('td')[0].textContent = producto.title
@@ -112,6 +112,7 @@ const pintarCarrito = () => {
       templateCarrito.querySelector('.btn-danger').dataset.id = producto.id
       templateCarrito.querySelector('span').textContent = producto.cantidad * producto.precio
       //clonando el carrito, utilizamos el fragment
+      console.log(producto);
       const clone = templateCarrito.cloneNode(true)
       fragment.appendChild(clone);   // ?
   })
@@ -120,11 +121,9 @@ const pintarCarrito = () => {
 
   pintarFooter()   //6)
 
-  localStorage.setItem('carrito',JSON.stringify(carrito))    //11-b)
+  //localStorage.setItem('carrito',JSON.stringify(carrito))    //11-b)
 }
 
-
-var myInput = document.getElementById('exampleModal')
 
 
 
@@ -133,6 +132,7 @@ var myInput = document.getElementById('exampleModal')
 const pintarFooter = () => {
   footer.innerHTML = ''    //iniciamos footer en 0
   //debemos preguntar si nuetro carrito esta vacio, si es true entra el if:
+  
   if (Object.keys(carrito).length === 0) {
       footer.innerHTML = ` <th scope="row" colspan="5">Carrito vacío - comience a comprar!</th>`
       return   //no olvidar return para que se salga de la funcion
@@ -154,8 +154,24 @@ const pintarFooter = () => {
   //9) Evento vaciar carrito
   const btnVaciar = document.getElementById('vaciar-carrito')
   btnVaciar.addEventListener('click', () => {
-      carrito = {};   //vaciamos el objeto carrito
+      carrito = [];   //vaciamos el objeto carrito
       pintarCarrito();
+  })
+}
+
+var alertPlaceholder = document.getElementById('liveAlertPlaceholder')
+var alertTrigger = document.getElementById('comprar')
+
+function alert(message, type) {
+  var wrapper = document.createElement('div')
+  wrapper.innerHTML = '<div class="alert alert-' + type + ' alert-dismissible" role="alert">' + message + '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>'
+
+  alertPlaceholder.append(wrapper)
+}
+
+if (alertTrigger) {
+  alertTrigger.addEventListener('click', function () {
+    alert('Nice, you triggered this alert message!', 'success')
   })
 }
 // carrito.push(productoSeleccionado);
