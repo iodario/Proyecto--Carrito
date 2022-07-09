@@ -97,13 +97,13 @@ function setCarrito(id) {
   }
   //una vez que tenemos el objeto tenemos que pushearlo al carrito. Estamos haciendo una coleccion de objetos indexados. 
   carrito[producto.id] = { ...producto }    //spread operator, aqui estamos haciendo una 'copia' de producto
-  console.log(carrito)
   pintarCarrito();
 }
 
 const pintarCarrito = () => {
-  // console.log(carrito)
+  console.log(carrito)
   items.innerHTML = ' '    //5-d) items debe partir vacio por cada vez que ejecutamos pintar Carrito(0)
+  if(!carrito){
   carrito.forEach(producto => {
       templateCarrito.querySelector('th').textContent = producto.id  //editando contenido de tag 'th'
       templateCarrito.querySelectorAll('td')[0].textContent = producto.title
@@ -114,17 +114,15 @@ const pintarCarrito = () => {
       //clonando el carrito, utilizamos el fragment
       const clone = templateCarrito.cloneNode(true)
       fragment.appendChild(clone);   // ?
-  })
+  })}
   // 5-c)Pintamos la informacion
   items.appendChild(fragment)
 
   pintarFooter()   //6)
 
-  localStorage.setItem('carrito',JSON.stringify(carrito))    //11-b)
+  //localStorage.setItem('carrito',JSON.stringify(carrito))    //11-b)
 }
 
-
-var myInput = document.getElementById('exampleModal')
 
 
 
@@ -156,6 +154,22 @@ const pintarFooter = () => {
   btnVaciar.addEventListener('click', () => {
       carrito = {};   //vaciamos el objeto carrito
       pintarCarrito();
+  })
+}
+
+var alertPlaceholder = document.getElementById('liveAlertPlaceholder')
+var alertTrigger = document.getElementById('comprar')
+
+function alert(message, type) {
+  var wrapper = document.createElement('div')
+  wrapper.innerHTML = '<div class="alert alert-' + type + ' alert-dismissible" role="alert">' + message + '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>'
+
+  alertPlaceholder.append(wrapper)
+}
+
+if (alertTrigger) {
+  alertTrigger.addEventListener('click', function () {
+    alert('Nice, you triggered this alert message!', 'success')
   })
 }
 // carrito.push(productoSeleccionado);
