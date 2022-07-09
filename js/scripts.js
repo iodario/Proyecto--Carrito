@@ -18,6 +18,7 @@ const domElements = {
 };
 
 const renderProducts = (products = []) => {
+ 
   //Primero reviso si mi parámetro es un array. Si no lo es, lanzo un error.
   //Aunque por default le puse que me parámetro sea un array, puede ser que no sea un array y me de el error.
   if (!Array.isArray(products)) {
@@ -29,9 +30,11 @@ const renderProducts = (products = []) => {
   //Esto es una forma de validar que el array no este vacio y solo lo verifico si ya previamente valide que fuera un array.
   if (products.length === 0) {
     console.error("No hay productos para mostrar");
+    domElements.productsContainer.innerHTML = "";
     return;
   }
-
+  console.log(products);
+  domElements.productsContainer.innerHTML = "";
   //Si es un array y no esta vacio, voy a recorrer el array y voy a crear una tarjeta para cada producto.
   products.forEach((product) => {
     const result = createBootstrapCard(product);
@@ -184,6 +187,31 @@ if (alertTrigger) {
 // console.log(carrito);
 // }
 
+function buscar( q ) { // FILTRA LOS PRODUCTOS POR EL PARAMENTRO q
+
+  let resultado = productos.filter( producto => producto.title.toLowerCase().includes( q.toLowerCase())); 
+       
+  renderProducts(resultado);                
+}
+
+// BUSCADOR
+document.querySelector('#buscar').addEventListener('keyup', () => {
+
+  let q = document.querySelector('#buscar').value;
+
+  if( q.length >= 2 ) { // FILTRA CUANDO HAY AL MENOS DOS LETRAS EN EL BUSCADOR
+
+   
+      buscar( q );        
+
+  } else if ( q.length === 0 ) {
+      
+      // SI NO HAY PARAMETRO DE FILTRO MUESTRA TODOS LOS PRODUCTOS        
+      
+      renderProducts( productos );
+  } 
+
+})
 
 
 

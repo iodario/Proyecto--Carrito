@@ -163,7 +163,6 @@ export const createBootstrapCard = (content = {}) => {
     starsContainer.classList.add(
       "d-flex",
       "justify-content-center",
-      "small",
       "col",
       "align-self-center",
       "text-warning"
