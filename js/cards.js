@@ -37,14 +37,14 @@ export const createBootstrapCard = (content = {}) => {
   
   const getCardContainter = () => {
     const cardContainer = document.createElement("div");
-    cardContainer.classList.add("col", "mb-5");
+    cardContainer.classList.add("col-lg-3","col-md-4" ,"col-sm-6" ,"px-2","mb-4");
   
     return cardContainer;
   };
   
   const getCard = () => {
     const card = document.createElement("div");
-    card.classList.add("card", "h-100");
+    card.classList.add("card","h-100", "shadow-lg", "border-0");
   
     return card;
   };
@@ -67,6 +67,7 @@ export const createBootstrapCard = (content = {}) => {
     const image = document.createElement("img");
     image.setAttribute("src", imageUrl);
     image.setAttribute("alt", imageAlt);
+    image.classList.add("img-thumbnail","img-fluid");
     return image;
   };
   
@@ -93,7 +94,7 @@ export const createBootstrapCard = (content = {}) => {
     }
   
     const cardBody = document.createElement("div");
-    cardBody.classList.add("card-body", "p-4");
+    cardBody.classList.add("card-body","row");
   
     const cardTitle = getCardTitle(title);
     cardBody.appendChild(cardTitle);
@@ -114,10 +115,10 @@ export const createBootstrapCard = (content = {}) => {
     }
   
     const cardTitleContainer = document.createElement("div");
-    cardTitleContainer.classList.add("text-center");
+    cardTitleContainer.classList.add();
   
     const cardTitle = document.createElement("h5");
-    cardTitle.classList.add("fw-bolder");
+    cardTitle.classList.add("fw-bolder","text-center", "align-middle","col");
     cardTitle.textContent = title;
     cardTitleContainer.appendChild(cardTitle);
   
@@ -135,7 +136,9 @@ export const createBootstrapCard = (content = {}) => {
       console.error("No se puede crear un precio negativo");
     }
   
-    const cardPrice = document.createElement("p");
+    const cardPrice = document.createElement("div");
+    cardPrice.classList.add("text-center","h3","col",
+    "align-self-center","justify-content-center","text-success");
     // Si el precio es 0 ASUMO que es gratuito el producto.
     if (price === 0) {
       cardPrice.appendChild(document.createTextNode(`FREE`));
@@ -161,8 +164,9 @@ export const createBootstrapCard = (content = {}) => {
       "d-flex",
       "justify-content-center",
       "small",
-      "text-warning",
-      "mb-2"
+      "col",
+      "align-self-center",
+      "text-warning"
     );
   
     // Creo el elemento de las estrellas segun la cantidad de estrellas que tenga el producto

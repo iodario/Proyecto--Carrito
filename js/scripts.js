@@ -121,6 +121,12 @@ const pintarCarrito = () => {
 }
 
 
+var myInput = document.getElementById('exampleModal')
+
+var btnCarrito = document.getElementById("btnCarro");
+btnCarrito.addEventListener("click", function () {
+  myInput.focus()
+})
 
 // carrito.push(productoSeleccionado);
 // console.log(carrito);
