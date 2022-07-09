@@ -10,6 +10,7 @@ const templateCarrito = document.getElementById('template-carrito').content;
 let btnCarrito = document.getElementById('cantCarrito');
 const fragment = document.createDocumentFragment();
 const templateFooter = document.getElementById('template-footer').content;
+const items = document.getElementById('items');
 
 //Atajo para el método querySelector
 const $ = (selector) => document.querySelector(selector);
@@ -18,14 +19,8 @@ const domElements = {
 };
 
 const renderProducts = (products = []) => {
-  //Primero reviso si mi parámetro es un array. Si no lo es, lanzo un error.
-  //Aunque por default le puse que me parámetro sea un array, puede ser que no sea un array y me de el error.
-  if (!Array.isArray(products)) {
-    console.error("El parametro products debe ser un array");
-    return;
-  }
 
-  //Si es un array, genial, voy a verificar que no este vacio y sino lanzo un error.
+  //Verificar que el array no este vacio.
   //Esto es una forma de validar que el array no este vacio y solo lo verifico si ya previamente valide que fuera un array.
   if (products.length === 0) {
     console.error("No hay productos para mostrar");
@@ -59,9 +54,9 @@ const renderProducts = (products = []) => {
 document.addEventListener('DOMContentLoaded', () => {
   let data = fetchAPI(APIURL);
   //if (localStorage.getItem('carrito')) {       //11-a) si existe dentro del localStorage una clave 'carrito'
-   // carrito = JSON.parse(localStorage.getItem('carrito'));   //asignar a carrito, el parse a Objeto de localStorage.getItem
-    renderProducts(data);                          //mostrar carrito en el Dom
-  }
+  // carrito = JSON.parse(localStorage.getItem('carrito'));   //asignar a carrito, el parse a Objeto de localStorage.getItem
+  renderProducts(data);                          //mostrar carrito en el Dom
+}
 )
 
 
@@ -97,7 +92,7 @@ function setCarrito(id) {
   if (carrito.hasOwnProperty(producto.id)) {
     console.log(producto);
     producto.cantidad = carrito[producto.id].cantidad + 1
-    
+
   }
   cantproduc += 1;
   //una vez que tenemos el objeto tenemos que pushearlo al carrito. Estamos haciendo una coleccion de objetos indexados. 
@@ -109,17 +104,17 @@ const pintarCarrito = () => {
   console.log(btnCarrito)
   btnCarrito.textContent = cantproduc;
   items.innerHTML = ' '    //5-d) items debe partir vacio por cada vez que ejecutamos pintar Carrito(0)
-    
+
   carrito.forEach(producto => {
-      templateCarrito.querySelector('th').textContent = producto.id  //editando contenido de tag 'th'
-      templateCarrito.querySelectorAll('td')[0].textContent = producto.title
-      templateCarrito.querySelectorAll('td')[1].textContent = producto.cantidad
-      templateCarrito.querySelector('.btn-info').dataset.id = producto.id
-      templateCarrito.querySelector('.btn-danger').dataset.id = producto.id
-      templateCarrito.querySelector('span').textContent = producto.cantidad * producto.precio
-      //clonando el carrito, utilizamos el fragment
-      const clone = templateCarrito.cloneNode(true)
-      fragment.appendChild(clone);   // ?
+    templateCarrito.querySelector('th').textContent = producto.id  //editando contenido de tag 'th'
+    templateCarrito.querySelectorAll('td')[0].textContent = producto.title
+    templateCarrito.querySelectorAll('td')[1].textContent = producto.cantidad
+    templateCarrito.querySelector('.btn-info').dataset.id = producto.id
+    templateCarrito.querySelector('.btn-danger').dataset.id = producto.id
+    templateCarrito.querySelector('span').textContent = producto.cantidad * producto.precio
+    //clonando el carrito, utilizamos el fragment
+    const clone = templateCarrito.cloneNode(true)
+    fragment.appendChild(clone);   // ?
   })
   // 5-c)Pintamos la informacion
   items.appendChild(fragment)
@@ -137,10 +132,10 @@ const pintarCarrito = () => {
 const pintarFooter = () => {
   footer.innerHTML = ''    //iniciamos footer en 0
   //debemos preguntar si nuetro carrito esta vacio, si es true entra el if:
-  
+
   if (Object.keys(carrito).length === 0) {
-      footer.innerHTML = ` <th scope="row" colspan="5">Carrito vacío - comience a comprar!</th>`
-      return   //no olvidar return para que se salga de la funcion
+    footer.innerHTML = ` <th scope="row" colspan="5">Carrito vacío - comience a comprar!</th>`
+    return   //no olvidar return para que se salga de la funcion
   }
   //7) si no esta vacio pintamos footer, sumando cantidades y totales
   const nCantidad = Object.values(carrito).reduce((acc, { cantidad }) => acc + cantidad, 0)    //este acumuldador, por cada iteracion va a ir acumulando lo que nosotros hagamos como suma
@@ -159,9 +154,9 @@ const pintarFooter = () => {
   //9) Evento vaciar carrito
   const btnVaciar = document.getElementById('vaciar-carrito')
   btnVaciar.addEventListener('click', () => {
-      carrito = [];
-      cantproduc = 0;   //vaciamos el objeto carrito
-      pintarCarrito();
+    carrito = [];
+    cantproduc = 0;   //vaciamos el objeto carrito
+    pintarCarrito();
   })
 }
 
@@ -180,9 +175,40 @@ if (alertTrigger) {
     alert('Nice, you triggered this alert message!', 'success')
   })
 }
-// carrito.push(productoSeleccionado);
-// console.log(carrito);
-// }
+
+
+
+//5-a) creamos evento para capturar click de botones de aumentar y disminuir  //no se por que lo saco de items
+items.addEventListener('click', (e) => {
+  btnAccion(e)
+})
+//10) botones aumentar y disminuir cantidad. Usaremos Event Delegation
+//10-a) buscamos los id de los botones y vemos donde se guardaron  b)creamos funcion de accion
+const btnAccion = e => {
+   console.log(e.target)  //vemos la info de los elementos en consola al presionar cualquier cosa 
+  //Accion de aumentar
+  if (e.target.classList.contains('btn-info')) {    //utilizamos objetos indexados
+      console.log(carrito[e.target.dataset.id])    //esto que sale en console.log lo asigno a const producto
+      const producto = carrito[e.target.dataset.id]
+      producto.cantidad++ // aumentamos la cantidad en 1.
+      // ahora decimos 'este carrito' , en su id, va a ser una 'copia' de producto
+      carrito[e.target.dataset.id] = { ...producto }    //con esto se van agregando elementos a productos
+
+      pintarCarrito();
+  }
+
+  //Accion de disminuir
+  if (e.target.classList.contains('btn-danger')) {
+      const producto = carrito[e.target.dataset.id]
+      producto.cantidad--
+      //cuando la cantidad sea 0, eliminar el elemento 
+      if (producto.cantidad === 0) {
+          delete carrito[e.target.dataset.id]
+      }
+      pintarCarrito();
+  }
+  e.stopPropagation();
+}
 
 
 
@@ -197,13 +223,3 @@ if (alertTrigger) {
 
 
 
-
-//Si llegamos por tiempos... aca algun ejemplo mas de fetch e ideas:
-
-// const productsArray = (await getAllProducts()) || [];
-
-// renderProducts(productsArray);
-
-// const producto = await getProductById(1);
-
-// renderProducts([producto]);
