@@ -21,15 +21,13 @@ const domElements = {
 //funcion que renderiza la pagina y carga los productos
 const renderProducts = (products = []) => {
 
-    // Primero reviso si mi parámetro es un array. Si no lo es, lanzo un error.
-    // Aunque por default le puse que me parámetro sea un array, puede ser que no sea un array y me de el error.
+    // Primero reviso si mi parámetro es un array. Si no lo es, lanzo un error.  
     if (!Array.isArray(products)) {
         console.error("El parametro products debe ser un array");
         return;
     }
 
-    //Verificar que el array no este vacio.
-    //Esto es una forma de validar que el array no este vacio y solo lo verifico si ya previamente valide que fuera un array.
+    //Verificar que el array no este vacio, si ya previamente valide que fuera un array.
     if (products.length === 0) {
         console.error("No hay productos para mostrar");
         domElements.productsContainer.innerHTML = "";
@@ -45,8 +43,7 @@ const renderProducts = (products = []) => {
     return;
 };
 
-//Funcion anónima que se auto-ejecuta. Esta bueno para una funcion que no necesita parámetros y es inicializadora de la app.
-
+//Funcion anónima que se auto-ejecuta.
 (() => {
 
     fetch(APIURL)
@@ -60,16 +57,16 @@ const renderProducts = (products = []) => {
 })();
 
 
-//paso 2) utilizamos DOMContentLoaded cuando toda la pagina esta cargada 
+//Utilizamos DOMContentLoaded cuando toda la pagina esta cargada 
 document.addEventListener('DOMContentLoaded', () => {
     let data = fetchAPI(APIURL);
-    //if (localStorage.getItem('carrito')) {       //11-a) si existe dentro del localStorage una clave 'carrito'
+    //if (localStorage.getItem('carrito')) {       //si existe dentro del localStorage una clave 'carrito'
     // carrito = JSON.parse(localStorage.getItem('carrito'));   //asignar a carrito, el parse a Objeto de localStorage.getItem
     renderProducts(data);                          //mostrar carrito en el Dom
 }
 )
 
-
+//creo evento click para agregar al carrito
 domElements.productsContainer.addEventListener('click', (e) => {
     addCarrito(e)
     
@@ -99,7 +96,7 @@ function setCarrito(id) {
         cantidad: 1                                            // la cantidad la dejamos en 1, luego aumentara
     }
 
-    //4-e) aumentar el numero de productos en el carrito, al presionar Comprar       //Carrito es toda nuestra coleccion de objetos. Estamos accediendo sólo al elemento que se está repitiendo. Una vez que accedemos, accedemos solamente a la cantidad, y la aumentamos en 1. Si este producto no exixte, por defecto la cantidad sera 1. 
+    //aumentar el numero de productos en el carrito, al presionar Comprar       //Carrito es toda nuestra coleccion de objetos. Estamos accediendo sólo al elemento que se está repitiendo. Una vez que accedemos, accedemos solamente a la cantidad, y la aumentamos en 1. Si este producto no exixte, por defecto la cantidad sera 1. 
     if (carrito.hasOwnProperty(producto.id)) {
         console.log(producto);
         producto.cantidad = carrito[producto.id].cantidad + 1
@@ -114,7 +111,7 @@ function setCarrito(id) {
 const pintarCarrito = () => {
     console.log(btnCarrito)
     btnCarrito.textContent = cantproduc;
-    items.innerHTML = ' '    //5-d) items debe partir vacio por cada vez que ejecutamos pintar Carrito(0)
+    items.innerHTML = ' '    //items debe partir vacio por cada vez que ejecutamos pintar Carrito(0)
 
     carrito.forEach(producto => {
         templateCarrito.querySelector('th').textContent = producto.id  //editando contenido de tag 'th'
@@ -127,19 +124,17 @@ const pintarCarrito = () => {
         const clone = templateCarrito.cloneNode(true)
         fragment.appendChild(clone);   // ?
     })
-    // 5-c)Pintamos la informacion
+    //Pintamos la informacion
     items.appendChild(fragment)
 
-    pintarFooter()   //6)
+    pintarFooter()   
 
     //localStorage.setItem('carrito',JSON.stringify(carrito))    //11-b)
 }
 
 
 
-
-// 6)template-footer
-// 6-a) generamos los template, vamos a buscar el id guardado
+//generamos los template, vamos a buscar el id guardado
 const pintarFooter = () => {
     footer.innerHTML = ''    //iniciamos footer en 0
     //debemos preguntar si nuetro carrito esta vacio, si es true entra el if:
@@ -148,13 +143,13 @@ const pintarFooter = () => {
         footer.innerHTML = ` <th scope="row" colspan="5">Carrito vacío - comience a comprar!</th>`
         return   //no olvidar return para que se salga de la funcion
     }
-    //7) si no esta vacio pintamos footer, sumando cantidades y totales
+    //si no esta vacio pintamos footer, sumando cantidades y totales
     const nCantidad = Object.values(carrito).reduce((acc, { cantidad }) => acc + cantidad, 0)    //este acumuldador, por cada iteracion va a ir acumulando lo que nosotros hagamos como suma
     const nPrecio = Object.values(carrito).reduce((acc, { cantidad, precio }) => acc + cantidad * precio, 0)
     console.log(nPrecio)
     // console.log(nCantidad)
 
-    //8) pintamos la ultima funcionalidad en el footer(suma de cantidades y totales)
+    //pintamos la ultima funcionalidad en el footer(suma de cantidades y totales)
     templateFooter.querySelectorAll('td')[0].textContent = nCantidad;
     templateFooter.querySelector('span').textContent = nPrecio;
 
@@ -162,7 +157,7 @@ const pintarFooter = () => {
     fragment.appendChild(clone);
     footer.appendChild(fragment);
 
-    //9) Evento vaciar carrito
+    //Evento vaciar carrito
     const btnVaciar = document.getElementById('vaciar-carrito')
     btnVaciar.addEventListener('click', () => {
         carrito = [];
@@ -187,29 +182,30 @@ if (alertTrigger) {
     })
 }
 
-function buscar(q) { // FILTRA LOS PRODUCTOS POR EL PARAMENTRO q
+//Buscador
+document.querySelector('#buscar').addEventListener('keyup', () => {
+    let q = document.querySelector('#buscar').value;
+    if (q.length >= 2) { // Filtra cuando hay al menos dos letras en el input
+        buscar(q);
+    } else if (q.length === 0) {
+        // si no hay nada que buscar muestra todos los productos
+        renderProducts(productos);
+    }
+})
+//funcion que filtra resultados de busqueda por coincidencia
+function buscar(q) { 
     let resultado = productos.filter(producto => producto.title.toLowerCase().includes(q.toLowerCase()));
     renderProducts(resultado);
 }
 
-//BUSCADOR
-document.querySelector('#buscar').addEventListener('keyup', () => {
-    let q = document.querySelector('#buscar').value;
-    if (q.length >= 2) { // FILTRA CUANDO HAY AL MENOS DOS LETRAS EN EL BUSCADOR
-        buscar(q);
-    } else if (q.length === 0) {
-        // SI NO HAY PARAMETRO DE FILTRO MUESTRA TODOS LOS PRODUCTOS        
-        renderProducts(productos);
-    }
-})
 
-
-//5-a) creamos evento para capturar click de botones de aumentar y disminuir  //no se por que lo saco de items
+//creamos evento para capturar click de botones de aumentar y disminuir  //no se por que lo saco de items
 items.addEventListener('click', (e) => {
     btnAccion(e)
 })
-//10) botones aumentar y disminuir cantidad. Usaremos Event Delegation
-//10-a) buscamos los id de los botones y vemos donde se guardaron  b)creamos funcion de accion
+
+
+// botones aumentar y disminuir cantidad. Usaremos Event Delegation
 const btnAccion = e => {
     console.log(e.target)  //vemos la info de los elementos en consola al presionar cualquier cosa 
     //Accion de aumentar
