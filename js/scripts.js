@@ -72,7 +72,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 domElements.productsContainer.addEventListener('click', (e) => {
     addCarrito(e)
-    Swal.fire('Producto agregado con exito')
+    
 })
 
 
@@ -82,6 +82,7 @@ const addCarrito = e => {
     if (e.target.classList.contains('btn-outline-dark')) {   //detectamos el boton y utilizamos el producto.id
         // console.log(e.target.parentElement) //parentElement me muestra el elemento padre, en este caso el div padre
         setCarrito(e.target.id);
+        Swal.fire('Producto agregado con exito')
     }
     e.stopPropagation()   //detenemos la propagacion del evento 
 
@@ -187,29 +188,19 @@ if (alertTrigger) {
 }
 
 function buscar(q) { // FILTRA LOS PRODUCTOS POR EL PARAMENTRO q
-
     let resultado = productos.filter(producto => producto.title.toLowerCase().includes(q.toLowerCase()));
-
     renderProducts(resultado);
 }
 
 //BUSCADOR
 document.querySelector('#buscar').addEventListener('keyup', () => {
-
     let q = document.querySelector('#buscar').value;
-
     if (q.length >= 2) { // FILTRA CUANDO HAY AL MENOS DOS LETRAS EN EL BUSCADOR
-
-
         buscar(q);
-
     } else if (q.length === 0) {
-
         // SI NO HAY PARAMETRO DE FILTRO MUESTRA TODOS LOS PRODUCTOS        
-
         renderProducts(productos);
     }
-
 })
 
 
