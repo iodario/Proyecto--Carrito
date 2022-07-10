@@ -123,12 +123,7 @@ const pintarCarrito = () => {
     pintarFooter()   
 
     localStorage.setItem('carrito',JSON.stringify(carrito))    
-    // if (localStorage.getItem('carrito')) { 
-    //     carrito = JSON.parse(localStorage.getItem('carrito'));
-    //     console.log('guarda en localStorage y funciona el getItem');       
-    // }else{
-    //     console.log("first")
-    // }
+   
 }
 
 
