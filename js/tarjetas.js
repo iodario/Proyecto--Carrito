@@ -1,38 +1,5 @@
 
-export const createBootstrapCard = (content = {}) => {
-    // Reviso si el content no tiene propiedades y lanzo un error si es asi.
-    if (Object.keys(content).length === 0) {
-        console.error("No se puede crear una tarjeta sin contenido");
-        return;
-    }
-
-    //Genero un numero random como review de estrellas.
-    const stars = Math.random() * 5;
-
-    // Desestructuro el contenido. Yo ya se como viene el contenido por que lo leo de la documentación de la API.
-    const { id, title, price, category, description, image } = content;
-
-    // Crear el elemento, el contenedor general del card
-    const cardContainer = getCardContainter();
-    cardContainer.setAttribute("id", id);
-    // Creo el wrapper especifico para la card.
-    const card = getCard();
-    //Agrego el wrapper al contenedor del card
-    cardContainer.appendChild(card);
-    //Creo la imagen del producto
-    const cardImg = getCardImg(image, title);
-    card.appendChild(cardImg);
-
-    //Creo el body, que esta misma funciona se encarga de llamar a las funciones que completan el body
-    const cardBody = getCardBody(title, price, description, stars);
-    card.appendChild(cardBody);
-
-    const cardFooter = getCardFooter(id);
-    card.appendChild(cardFooter);
-
-    return cardContainer;
-};
-
+//creo elementos del Dom y seteo sus clases
 const getCardContainter = () => {
     const cardContainer = document.createElement("div");
     cardContainer.classList.add("col-lg-3", "col-md-4", "col-sm-6", "px-2", "mb-4");
@@ -47,9 +14,9 @@ const getCard = () => {
     return card;
 };
 
-//Me devuelve un elemento image con sus atributos.
+//Funcion que obtiene las imagenes
 const getCardImg = (imageUrl = "", imageAlt = "Nothing") => {
-    //Si la imagen no tiene URL no quiero que haga nada. Lanzo un error por consola y retorno un elemento vacio.
+    //Si la imagen no tiene URL no quiero que haga nada. 
     if (imageUrl === "") {
         console.error("No se puede crear una tarjeta sin imagen");
         return;
@@ -61,7 +28,6 @@ const getCardImg = (imageUrl = "", imageAlt = "Nothing") => {
             "Atención, una tarjeta sin atributo alt personalizado no es una buena práctica."
         );
     }
-
     const image = document.createElement("img");
     image.setAttribute("src", imageUrl);
     image.setAttribute("alt", imageAlt);
@@ -69,8 +35,42 @@ const getCardImg = (imageUrl = "", imageAlt = "Nothing") => {
     return image;
 };
 
-// Creo funcion que me devuelve el body. Desde aca voy a llamar a todas las funciones que me vallan armando el body entero.
-const getCardBody = (title, price, description, stars) => {
+//funcion que crea las tarjetas de productos
+export const crearTarjeta = (content = {}) => {
+    // Reviso si el content no tiene propiedades y lanzo un error si es asi.
+    if (Object.keys(content).length === 0) {
+        console.error("No se puede crear una tarjeta sin contenido");
+        return;
+    }
+    
+    // Desestructuro el contenido. 
+    const { id, title, price, image } = content;
+
+    // Crear el elemento, el contenedor general de la tarjeta
+    const cardContainer = getCardContainter();
+    cardContainer.setAttribute("id", id);
+
+    // Estructuramos cada tarjeta
+    const card = getCard();
+    //Agrego el wrapper al contenedor del card
+    cardContainer.appendChild(card);
+    //Creo la imagen del producto
+    const cardImg = getCardImg(image, title);
+    card.appendChild(cardImg);
+
+    //Creo el body, que esta misma funciona se encarga de llamar a las funciones que completan el body
+    const cardBody = getCardBody(title, price);
+    card.appendChild(cardBody);
+
+    const cardFooter = getCardFooter(id);
+    card.appendChild(cardFooter);
+
+    return cardContainer;
+};
+
+
+// Funcion que crea el body. 
+const getCardBody = (title, price) => {
     if (!title) {
         console.error("No se puede crear una tarjeta sin titulo");
         return;
@@ -81,15 +81,6 @@ const getCardBody = (title, price, description, stars) => {
         return;
     }
 
-    if (!description) {
-        console.error("No se puede crear una tarjeta sin descripción");
-        return;
-    }
-
-    if (!stars) {
-        console.error("No se puede crear una tarjeta sin estrellas");
-        return;
-    }
 
     const cardBody = document.createElement("div");
     cardBody.classList.add("card-body", "row");
@@ -99,10 +90,7 @@ const getCardBody = (title, price, description, stars) => {
 
     const cardPrice = getCardPrice(price);
     cardBody.appendChild(cardPrice);
-
-    const cardReviewsStars = getCardReviewsStars(stars);
-    cardBody.appendChild(cardReviewsStars);
-
+  
     return cardBody;
 };
 
@@ -148,36 +136,8 @@ const getCardPrice = (price) => {
 };
 
 
-
-const getCardReviewsStars = (stars = 1) => {
-    //Si no tiene reviews en estrellas no quiero que haga nada.
-    if (+stars === 0) {
-        return;
-    }
-
-    //Si tiene estrellas o sea es mayor a 0
-    // Creo el elemento contenedor
-    const starsContainer = document.createElement("div");
-    starsContainer.classList.add(
-        "d-flex",
-        "justify-content-center",
-        "small",
-        "col",
-        "align-self-center",
-        "text-warning"
-    );
-
-    // Creo el elemento de las estrellas segun la cantidad de estrellas que tenga el producto
-    for (let index = 0; index < stars; index++) {
-        let star = document.createElement("div");
-        star.classList.add("bi-star-fill");
-        starsContainer.appendChild(star);
-    }
-    return starsContainer;
-};
-
 const getCardFooter = (id) => {
-    // category = category.charAt(0).toUpperCase() + category.slice(1);
+    
 
     //Creo el elemento contenedor del footer
     const cardFooter = document.createElement("div");

@@ -1,7 +1,7 @@
-import { createBootstrapCard } from "./cards.js";
+import { crearTarjeta } from "./tarjetas.js";
 import { getAllProducts, getProductById, APIURL, fetchAPI } from "./fetch.js";
 
-//declaro objeto Carrito
+//declaracion variables y constantes, inicializaciones.
 
 let carrito = []
 let productos = {}
@@ -12,12 +12,13 @@ const fragment = document.createDocumentFragment();
 const templateFooter = document.getElementById('template-footer').content;
 const items = document.getElementById('items');
 
-//Atajo para el método querySelector
-const $ = (selector) => document.querySelector(selector);
+
+//obtenemos elementos del Dom y los guardamos en un objeto
 const domElements = {
-    productsContainer: $("#cards-container"),
+    productsContainer: document.querySelector('#cards-container')
 };
 
+//funcion que renderiza la pagina y carga los productos
 const renderProducts = (products = []) => {
 
     // Primero reviso si mi parámetro es un array. Si no lo es, lanzo un error.
@@ -38,7 +39,7 @@ const renderProducts = (products = []) => {
     domElements.productsContainer.innerHTML = "";
     //Si es un array y no esta vacio, voy a recorrer el array y voy a crear una tarjeta para cada producto.
     products.forEach((product) => {
-        const result = createBootstrapCard(product);
+        const result = crearTarjeta(product);
         domElements.productsContainer.appendChild(result);
     });
     return;
