@@ -3,7 +3,7 @@ import { getAllProducts, getProductById, APIURL, fetchAPI } from "./fetch.js";
 
 //declaracion variables y constantes, inicializaciones.
 
-let carrito = []
+let carrito = {}
 let productos = {}
 let cantproduc = 0;
 const templateCarrito = document.getElementById('template-carrito').content;
@@ -19,27 +19,17 @@ const domElements = {
 };
 
 //funcion que renderiza la pagina y carga los productos
-const renderProducts = (products = []) => {
+const renderProducts = (products = {}) => {
 
-    // Primero reviso si mi parámetro es un array. Si no lo es, lanzo un error.  
-    if (!Array.isArray(products)) {
-        console.error("El parametro products debe ser un array");
-        return;
-    }
-
-    //Verificar que el array no este vacio, si ya previamente valide que fuera un array.
-    if (products.length === 0) {
-        console.error("No hay productos para mostrar");
-        domElements.productsContainer.innerHTML = "";
-        return;
-    }
-    console.log(products);
+   
     domElements.productsContainer.innerHTML = "";
-    //Si es un array y no esta vacio, voy a recorrer el array y voy a crear una tarjeta para cada producto.
-    products.forEach((product) => {
+
+    //Voy a recorrer el objeto  y voy a crear una tarjeta para cada producto.
+    Object.values(products).forEach((product) => {
         const result = crearTarjeta(product);
         domElements.productsContainer.appendChild(result);
     });
+    
     return;
 };
 
@@ -60,10 +50,13 @@ const renderProducts = (products = []) => {
 //Utilizamos DOMContentLoaded cuando toda la pagina esta cargada 
 document.addEventListener('DOMContentLoaded', () => {
     let data = fetchAPI(APIURL);
-    //if (localStorage.getItem('carrito')) {       //si existe dentro del localStorage una clave 'carrito'
-    // carrito = JSON.parse(localStorage.getItem('carrito'));   //asignar a carrito, el parse a Objeto de localStorage.getItem
-    renderProducts(data);                          //mostrar carrito en el Dom
-}
+    if (localStorage.getItem('carrito')) {       //si existe dentro del localStorage una clave 'carrito'
+    carrito = JSON.parse(localStorage.getItem('carrito'));   //asignar a carrito, el parse a Objeto de localStorage.getItem
+    renderProducts(data);
+    pintarCarrito();
+    
+    pintarFooter();                          //mostrar carrito en el Dom
+}}
 )
 
 //creo evento click para agregar al carrito
@@ -74,10 +67,10 @@ domElements.productsContainer.addEventListener('click', (e) => {
 
 
 const addCarrito = e => {
-    // console.log(e.target)    
-    // console.log(e.target.classList.contains('btn-dark'))     // valida si el elemento contiene la propiedad que pasamos por parametro
-    if (e.target.classList.contains('btn-outline-dark')) {   //detectamos el boton y utilizamos el producto.id
-        // console.log(e.target.parentElement) //parentElement me muestra el elemento padre, en este caso el div padre
+    
+     // valida si el elemento contiene la propiedad que pasamos por parametro
+    if (e.target.classList.contains('btn-outline-dark')) {   
+       
         setCarrito(e.target.id);
         Swal.fire('Producto agregado con exito')
     }
@@ -109,11 +102,11 @@ function setCarrito(id) {
 }
 
 const pintarCarrito = () => {
-    console.log(btnCarrito)
+   
     btnCarrito.textContent = cantproduc;
     items.innerHTML = ' '    //items debe partir vacio por cada vez que ejecutamos pintar Carrito(0)
 
-    carrito.forEach(producto => {
+    Object.values(carrito).forEach(producto => {
         templateCarrito.querySelector('th').textContent = producto.id  //editando contenido de tag 'th'
         templateCarrito.querySelectorAll('td')[0].textContent = producto.title
         templateCarrito.querySelectorAll('td')[1].textContent = producto.cantidad
@@ -129,7 +122,13 @@ const pintarCarrito = () => {
 
     pintarFooter()   
 
-    //localStorage.setItem('carrito',JSON.stringify(carrito))    
+    localStorage.setItem('carrito',JSON.stringify(carrito))    
+    // if (localStorage.getItem('carrito')) { 
+    //     carrito = JSON.parse(localStorage.getItem('carrito'));
+    //     console.log('guarda en localStorage y funciona el getItem');       
+    // }else{
+    //     console.log("first")
+    // }
 }
 
 
@@ -146,9 +145,8 @@ const pintarFooter = () => {
     //si no esta vacio pintamos footer, sumando cantidades y totales
     const nCantidad = Object.values(carrito).reduce((acc, { cantidad }) => acc + cantidad, 0)    //este acumuldador, por cada iteracion va a ir acumulando lo que nosotros hagamos como suma
     const nPrecio = Object.values(carrito).reduce((acc, { cantidad, precio }) => acc + cantidad * precio, 0)
-    console.log(nPrecio)
-    // console.log(nCantidad)
-
+    
+    
     //pintamos la ultima funcionalidad en el footer(suma de cantidades y totales)
     templateFooter.querySelectorAll('td')[0].textContent = nCantidad;
     templateFooter.querySelector('span').textContent = nPrecio;
