@@ -20,7 +20,6 @@ const domElements = {
 
 //funcion que renderiza la pagina y carga los productos
 const renderProducts = (products = {}) => {
-
    
     domElements.productsContainer.innerHTML = "";
 
