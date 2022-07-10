@@ -20,8 +20,8 @@ const domElements = {
 
 const renderProducts = (products = []) => {
 
-    //Primero reviso si mi parámetro es un array. Si no lo es, lanzo un error.
-    //Aunque por default le puse que me parámetro sea un array, puede ser que no sea un array y me de el error.
+    // Primero reviso si mi parámetro es un array. Si no lo es, lanzo un error.
+    // Aunque por default le puse que me parámetro sea un array, puede ser que no sea un array y me de el error.
     if (!Array.isArray(products)) {
         console.error("El parametro products debe ser un array");
         return;
@@ -192,7 +192,7 @@ function buscar(q) { // FILTRA LOS PRODUCTOS POR EL PARAMENTRO q
     renderProducts(resultado);
 }
 
-// BUSCADOR
+//BUSCADOR
 document.querySelector('#buscar').addEventListener('keyup', () => {
 
     let q = document.querySelector('#buscar').value;
