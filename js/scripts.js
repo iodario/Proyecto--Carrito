@@ -1,5 +1,5 @@
 import { crearTarjeta } from "./tarjetas.js";
-import { getAllProducts, getProductById, APIURL, fetchAPI } from "./fetch.js";
+import { APIURL, fetchAPI } from "./fetch.js";
 
 //declaracion variables y constantes, inicializaciones.
 
@@ -209,7 +209,7 @@ const btnAccion = e => {
 }
 
 
-console.log(carrito)
+
 
 
 
